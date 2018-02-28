@@ -100,7 +100,7 @@ def back_propagation(graph, start, goal, cost):
                     lowest_cost = cost[next]
                     current = next
             except KeyError:
-                print("not valid neighbor")
+                pass
 
     shortest_path = list(reversed(shortest_path))
     graph.path = shortest_path
