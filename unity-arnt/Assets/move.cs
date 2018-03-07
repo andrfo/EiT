@@ -9,7 +9,7 @@ public class move : MonoBehaviour {
 	void Start () 
 	{
 		moveSpeed = 1f;
-		transform.position = new Vector3(39,0.5,28);
+		transform.position = new Vector3(39,1,28);
 	}
 	
 	// Update is called once per frame
