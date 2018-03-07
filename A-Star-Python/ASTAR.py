@@ -35,7 +35,7 @@ def main(argv):
     #test = exportMap('floormodelOUT.png', test.map)
 
     exportMap(filename, test.map.path)
-
+    print(test.map.path)
     return test.map.path
 
 
