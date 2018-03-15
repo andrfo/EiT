@@ -15,8 +15,8 @@ public class move_camera : MonoBehaviour {
 	private float increment = 0;
 	private int i;
 	private float time_interval = 0.01f;
-
-
+	private int path_length = 0;
+	private int closest_path = 0;
 
 	public int current_x_pos = 50;
 	public int current_y_pos = 20;
@@ -36,24 +36,42 @@ public class move_camera : MonoBehaviour {
 		generate_path ();
 
 		InvokeRepeating("update_position", .5f, time_interval);
-		InvokeRepeating("generate_path", 1.0f, time_interval*100);
+		//InvokeRepeating("generate_path", 1.0f, time_interval*100);
 
 	}
 
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		for (int i = closest_path; i < path_length; i++) {
+			if( (Mathf.Abs(Camera.main.transform.position.magnitude) - Mathf.Abs(arrows[i].transform.position.magnitude)) < 0.2f){
+				set_arrow_status (0, i, false);
+				set_arrow_status (i+1, i+6, true);
+				closest_path = i;
+				break;
+			}
+				
+		}
+
 	}
 
 	void update_position(){
-		
-
+		increment-= time_interval/200;
+		//translation
 		Vector3 start = Camera.main.transform.position;
+		Vector3 end = arrows [closest_path].transform.position;
 		Vector3 end = new Vector3(transform.position.x-increment, transform.position.y, transform.position.z);
-		//Camera.main.transform.position = new Vector3.Lerp(start, end, time_interval);
+		//Camera.main.transform.position = new Vector3(start.x + (start.x-end.x)*increment, start.y, start.z + (start.z  + (start.z-end.z)*increment));
+		//TODO: NEED TO CHECK WHICH DIRECTIONS WE HAVE TO MOVE THE CAMERA, AND THEN MAKE IT MOVE AT A CONSTANT MOVING RATE. MAYBE JUST CHANGE THE VIEW DIRECTION OF THE CAMERA? THAT WOULD PROBABLY BE BEST.
+		/*
+
 		Camera.main.transform.position = new Vector3(start.x+increment, start.y, start.z);
-		increment-= time_interval/100;
+
+
+		//rotation
+		Camera.main.transform.LookAt(arrows[closest_path].transform);
+		*/
 
 
 
@@ -64,9 +82,9 @@ public class move_camera : MonoBehaviour {
 
 		//read path from file
 		string[] lines = System.IO.File.ReadAllLines(Path.Combine(Directory.GetCurrentDirectory(), "coordinates.txt"));
-
+		path_length = lines.Length;
 		//init new arrow array
-		arrows = new GameObject[lines.Length];
+		arrows = new GameObject[path_length];
 
 		foreach (string line in lines)
 		{
@@ -83,15 +101,18 @@ public class move_camera : MonoBehaviour {
 			i++;
 		}
 			
-		for (int j = 5; j < i; j++) {
-			arrows [j].SetActive (false);
-		}
+		set_arrow_status (4, i, false);
+
 	
 	}
+	
 
 
-
-
+	void set_arrow_status(int from, int to, bool stat){
+		for (int k = from; k < to; k++) {
+			arrows [k].SetActive (stat);
+		}
+	}
 
 }
 
