@@ -15,6 +15,7 @@ public class SearchNode
     public float h;
     public float f;
     public GameObject cube;
+	public bool has_wall_neighbour = false;
 }
 
 public class AStar : MonoBehaviour
@@ -148,7 +149,11 @@ public class AStar : MonoBehaviour
     private float edgeCost(SearchNode a, SearchNode b)
     {
 		//TODO: Høyere kost når man er i nærheten av vegg (unngå kræsj)
-        if (a.x != b.x && a.y != b.y)
+		if (a.has_wall_neighbour == true && b.has_wall_neighbour == true) {
+			return 4f;
+		}
+
+		if (a.x != b.x && a.y != b.y)
         {
             return 1.3f;
         }
@@ -310,10 +315,12 @@ public class AStar : MonoBehaviour
                     (posY > 0 && posY < image.height - 1))
                 {
                     SearchNode neighbour = map[posX, posY];
-                    if (!neighbour.type.Equals('W'))
-                    {
-                        N.children.Add(neighbour);
-                    }
+                    
+					if (!neighbour.type.Equals ('W')) {
+						N.children.Add (neighbour);
+					} else {
+						N.has_wall_neighbour = true;
+					}
 
                 }
             }
