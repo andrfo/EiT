@@ -8,8 +8,8 @@ using System.IO;
 public class move_camera : MonoBehaviour {
 
 	//SET START POSITION
-	public int current_x_pos = 50;
-	public int current_z_pos = 20;
+	public float current_x_pos = 50f;
+	public float current_z_pos = 20f;
 
 	public GameObject path_object;
 	public GameObject[] arrows;
@@ -90,7 +90,7 @@ public class move_camera : MonoBehaviour {
 		foreach (string line in lines)
 		{
 			string[] tokens = line.Split(' ');
-			arrows [i] = Instantiate(path_object, new Vector3(Int32.Parse(tokens[0]) - current_x_pos, 0.1f, Int32.Parse(tokens[1]) - current_z_pos),  Quaternion.identity) as GameObject;
+			arrows [i] = Instantiate(path_object, new Vector3(Int32.Parse(tokens[0]) - current_x_pos, 0.2f, Int32.Parse(tokens[1]) - current_z_pos),  Quaternion.identity) as GameObject;
 			arrows[i].transform.localScale = new Vector3 (.8f, .8f, .8f);
 
 			if (i != 0) 
@@ -107,16 +107,17 @@ public class move_camera : MonoBehaviour {
 	void generate_path()
 	{
 		int i = 0;
-		int[,] path = best_first_search (current_x_pos, current_z_pos);
+		List<List<int>> path = best_first_search (current_x_pos, current_z_pos);
 		//read path from file
-		path_length = path.Length;
+		path_length = path.Count;
 
 		//init new arrow array
 		arrows = new GameObject[path_length];
 
-		foreach (int[] position in path)
+
+		foreach (List<int> position in path)
 		{
-			arrows [i] = Instantiate(path_object, new Vector3(Int32.Parse(position[0]) - current_x_pos, 0.1f, Int32.Parse(position[1]) - current_z_pos),  Quaternion.identity) as GameObject;
+			arrows [i] = Instantiate(path_object, new Vector3(position[0] - current_x_pos, 0.1f, position[1] - current_z_pos),  Quaternion.identity) as GameObject;
 			arrows[i].transform.localScale = new Vector3 (.8f, .8f, .8f);
 
 			if (i != 0) 
