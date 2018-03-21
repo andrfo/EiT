@@ -37,9 +37,9 @@ public class AStar : MonoBehaviour
 
 
         
-        bestFirstSearch(20, 50);
+        //bestFirstSearch(50, 20);
 
-        printMap();
+        //printMap();
     }
 
     // Update is called once per frame
@@ -85,12 +85,10 @@ public class AStar : MonoBehaviour
                         costs[i] += edgeCost(p.parent, p);
                     }
                 }
-                Debug.Log(i + " " + costs[i]);
-
+                
             }
         }
         int j = findIndexOfMin(costs);
-        Debug.Log(j);
         List<SearchNode> bestPath = paths[j];
         List<List<int>> intPath = new List<List<int>>();
         for (int i = 0; i < bestPath.Count; i++)
@@ -102,11 +100,18 @@ public class AStar : MonoBehaviour
             intPath[i].Add(y);
             map[x, y].type = 'B';
         }
-        return intPath;
-        
+
+		List<List<int>> rintPath = new List<List<int>> ();
+		for (int i = intPath.Count -1; i >= 0; i--)
+		{
+			rintPath.Add(intPath[i]);
+		}
+
+		return rintPath;
+
     }
 
-    private void printMap()
+    public void updateMap()
     {
         for (int j = 0; j < image.height; j++)
         {
