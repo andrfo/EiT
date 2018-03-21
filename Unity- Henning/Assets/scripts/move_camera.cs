@@ -35,6 +35,12 @@ public class move_camera : MonoBehaviour {
 	private Vector3 rotateValue;
 
 
+	public GameObject fireball;
+	public GameObject explosion;
+	public GameObject meteorSwarm;
+	public GameObject FireBolt;
+
+
 	void Start () 
 	{
 		GameObject AStarObj = GameObject.Find ("Astar");
@@ -43,7 +49,11 @@ public class move_camera : MonoBehaviour {
 		Camera.main.transform.position = new Vector3(current_x_pos, y_pos, current_z_pos);
 		generate_path ();
 		//StartCoroutine (generate_path()); 
-		generate_fire();
+		//generate_fire();
+		StartCoroutine(generate_fireball_coroutine());
+		StartCoroutine(generate_fire_bolt_coroutine());
+		StartCoroutine(generate_meteor_swarm_coroutine());
+		StartCoroutine(generate_explosion_coroutine());
 
 		InvokeRepeating("update_position", .5f, time_interval);
 
@@ -169,12 +179,49 @@ public class move_camera : MonoBehaviour {
 	}
 	void generate_fire()
 	{
-		for (int i = 0; i < 2; i++){
+		for (int i = 0; i < 20; i++){
 			GameObject f = Instantiate (fire);
 			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
 			f.transform.localScale = new Vector3(2, 2, 2);
 		}
 
+	}
+
+	IEnumerator generate_fireball_coroutine()
+	{
+		while (true){
+			GameObject f = Instantiate (fireball);
+			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
+			f.transform.localScale = new Vector3(2, 2, 2);
+			yield return new WaitForSeconds (UnityEngine.Random.Range(1, 3));
+		}
+	}
+	IEnumerator generate_explosion_coroutine()
+	{
+		while (true){
+			GameObject f = Instantiate (explosion);
+			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
+			f.transform.localScale = new Vector3(2, 2, 2);
+			yield return new WaitForSeconds (UnityEngine.Random.Range(1, 3));
+		}
+	}
+	IEnumerator generate_meteor_swarm_coroutine()
+	{
+		while (true){
+			GameObject f = Instantiate (meteorSwarm);
+			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
+			f.transform.localScale = new Vector3(2, 2, 2);
+			yield return new WaitForSeconds (UnityEngine.Random.Range(1, 3));
+		}
+	}
+	IEnumerator generate_fire_bolt_coroutine()
+	{
+		while (true){
+			GameObject f = Instantiate (FireBolt);
+			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
+			f.transform.localScale = new Vector3(2, 2, 2);
+			yield return new WaitForSeconds (UnityEngine.Random.Range(1, 3));
+		}
 	}
 
 }

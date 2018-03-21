@@ -205,10 +205,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3cb098c83948b4da4b701bd072456c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 2800000, guid: dc0d09aa428254bdc8e2d1e29664e064, type: 3}
+  image: {fileID: 2800000, guid: 033fc4d30fc434d95a281d6aff2c10a6, type: 3}
   door: {fileID: 100008, guid: 65fb86f734ce568408b3eaad4fca1b60, type: 3}
   wall: {fileID: 104986, guid: a5b4d15f79a319f4495d35cba5a10c56, type: 2}
   floor: {fileID: 100000, guid: 83821cf4970aad743b52430fad487999, type: 3}
+  imageWidth: 0
+  imageHeight: 0
 --- !u!4 &1100987963
 Transform:
   m_ObjectHideFlags: 0
@@ -317,4 +319,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   path_object: {fileID: 100000, guid: 699652891dffc4b3ea4e1f918e468ab5, type: 3}
   arrows: []
+  fire: {fileID: 132746, guid: b86c5b2aa8096224886b7d41a74230ac, type: 2}
   closest_path: 0
