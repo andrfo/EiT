@@ -61,7 +61,10 @@ public class move_camera : MonoBehaviour {
 		//translation
 		Vector3 start = Camera.main.transform.position;
 		Vector3 end = arrows [closest_path].transform.position;
-		Vector3 end = new Vector3(transform.position.x-increment, transform.position.y, transform.position.z);
+
+		//Vector3 end = new Vector3(transform.position.x-increment, transform.position.y, transform.position.z);
+		Camera.main.transform.position = new Vector3(start.x+increment, start.y, start.z);
+
 		//Camera.main.transform.position = new Vector3(start.x + (start.x-end.x)*increment, start.y, start.z + (start.z  + (start.z-end.z)*increment));
 		//TODO: NEED TO CHECK WHICH DIRECTIONS WE HAVE TO MOVE THE CAMERA, AND THEN MAKE IT MOVE AT A CONSTANT MOVING RATE. MAYBE JUST CHANGE THE VIEW DIRECTION OF THE CAMERA? THAT WOULD PROBABLY BE BEST.
 		/*
