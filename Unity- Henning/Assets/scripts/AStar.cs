@@ -27,12 +27,17 @@ public class AStar : MonoBehaviour
     public GameObject door;
 	public GameObject wall;
 	public GameObject floor;
+
+	public int imageWidth;
+	public int imageHeight;
     
 
 
     // Use this for initialization
     void Start()
     {
+		imageWidth = image.width;
+		imageHeight = image.height;
         goals = new List<SearchNode>();
         map = new SearchNode[image.width, image.height];
         loadMap();

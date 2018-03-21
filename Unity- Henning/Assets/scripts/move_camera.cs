@@ -8,13 +8,14 @@ using System.IO;
 public class move_camera : MonoBehaviour {
 
 	//SET START POSITION
-	private float current_x_pos = 30f;
-	private float current_z_pos = 30f;
+	private float current_x_pos = 40f;
+	private float current_z_pos = 40f;
 	private float y_pos = 1.5f;
 
 
 	public GameObject path_object;
 	public GameObject[] arrows;
+	public GameObject fire;
 
 	private AStar AStar;
 
@@ -42,6 +43,7 @@ public class move_camera : MonoBehaviour {
 		Camera.main.transform.position = new Vector3(current_x_pos, y_pos, current_z_pos);
 		generate_path ();
 		//StartCoroutine (generate_path()); 
+		generate_fire();
 
 		InvokeRepeating("update_position", .5f, time_interval);
 
@@ -163,6 +165,15 @@ public class move_camera : MonoBehaviour {
 
 		var targetRotation = Quaternion.LookRotation(arrow_in_camera_height - Camera.main.transform.position);
 		Camera.main.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
+
+	}
+	void generate_fire()
+	{
+		for (int i = 0; i < 2; i++){
+			GameObject f = Instantiate (fire);
+			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
+			f.transform.localScale = new Vector3(2, 2, 2);
+		}
 
 	}
 
