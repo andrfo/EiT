@@ -41,11 +41,10 @@ public class move_camera : MonoBehaviour {
 
 		Camera.main.transform.position = new Vector3(current_x_pos, y_pos, current_z_pos);
 		generate_path ();
+		//StartCoroutine (generate_path()); 
 
-
-		//generate_path_old ();
 		InvokeRepeating("update_position", .5f, time_interval);
-		//InvokeRepeating ("generate_path", 0, 1f);
+
 	}
 		
 	void Update ()
@@ -55,9 +54,9 @@ public class move_camera : MonoBehaviour {
 			closest_path += 1;
 		}
 
-		set_arrow_status (0, closest_path+1, true);
+		set_arrow_status (0, closest_path+1, false);
 		set_arrow_status (closest_path+2, closest_path+lookahead_constant+2, true);
-		set_arrow_status (closest_path+lookahead_constant+3, path_length, true);
+		set_arrow_status (closest_path+lookahead_constant+3, path_length, false);
 	}
 
 	void update_position()
@@ -108,9 +107,7 @@ public class move_camera : MonoBehaviour {
 
 	void generate_path()
 	{
-
 		List<List<int>> path = AStar.bestFirstSearch ((int)current_x_pos, (int)current_z_pos);
-		AStar.updateMap ();
 
 		int i = 0;
 

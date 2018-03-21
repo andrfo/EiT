@@ -25,6 +25,8 @@ public class AStar : MonoBehaviour
     private SearchNode[,] map;
     private List<SearchNode> path;
     public GameObject door;
+	public GameObject wall;
+	public GameObject floor;
     
 
 
@@ -140,6 +142,7 @@ public class AStar : MonoBehaviour
 
     private float edgeCost(SearchNode a, SearchNode b)
     {
+		//TODO: Høyere kost når man er i nærheten av vegg (unngå kræsj)
         if (a.x != b.x && a.y != b.y)
         {
             return 1.3f;
@@ -345,9 +348,16 @@ public class AStar : MonoBehaviour
                 {
                     node.type = 'W';
                     node.weight = getWeight('W');
-                    node.cube.transform.localScale += new Vector3(0, 2, 0);
-                    node.cube.transform.position = new Vector3(node.cube.transform.position.x, 1.5f, node.cube.transform.position.z); 
-                    node.cube.GetComponent<Renderer>().material.color = Color.red;
+
+					GameObject w = Instantiate(wall);
+					w.transform.position = new Vector3(node.cube.transform.position.x, 1.5f, node.cube.transform.position.z);
+					w.transform.localScale = new Vector3(.45f, 1.2f, .45f);
+					//d.transform.Rotate (Vector3.right * 90);
+					//d.transform.Rotate (Vector3.right * 90);
+
+					//node.cube.transform.localScale += new Vector3(0, 2, 0);
+                    //node.cube.transform.position = new Vector3(node.cube.transform.position.x, 1.5f, node.cube.transform.position.z); 
+                    //node.cube.GetComponent<Renderer>().material.color = Color.red;
                     continue;
                 }
                 //Is it a door?
@@ -368,6 +378,10 @@ public class AStar : MonoBehaviour
                     //It is a floor.
                     node.type = 'F';
                     node.weight = getWeight('F');
+					GameObject f = Instantiate(wall);
+					f.transform.position = new Vector3(node.cube.transform.position.x, 0, node.cube.transform.position.z);
+					f.transform.localScale = new Vector3(1, 0.6f, 1);
+
                 }
             }
         }
