@@ -33,8 +33,8 @@ public class move_camera : MonoBehaviour {
 
 	void Start () 
 	{
-		generate_path ();
-		//generate_path_old ();
+		//generate_path ();
+		generate_path_old ();
 		InvokeRepeating("update_position", .5f, time_interval);
 	}
 		
@@ -103,7 +103,7 @@ public class move_camera : MonoBehaviour {
 			i++;
 		}
 	}
-		
+	/*	
 	void generate_path()
 	{
 		int i = 0;
@@ -124,14 +124,14 @@ public class move_camera : MonoBehaviour {
 			{
 				arrows [i - 1].transform.LookAt (arrows[i].transform);
 				arrows [i - 1].transform.Rotate (arrows [i].transform.up * 90);
-				arrows[i-1].transform.Rotate(arrows[i].transform.right * 90);
+				arrows [i - 1].transform.Rotate(arrows[i].transform.right * 90);
 				//TODO: Set last arrow to something telling us we have reached the exit
 			}
 			i++;
 		}
 	}
 
-
+*/
 
 	void set_arrow_status(int from, int to, bool stat)
 	{
