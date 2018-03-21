@@ -1,5 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class SearchNode
@@ -13,16 +14,18 @@ public class SearchNode
     public float g;
     public float h;
     public float f;
+    public GameObject cube;
 }
 
-public class AStar : MonoBehaviour {
+public class AStar : MonoBehaviour
+{
 
     public Texture2D image;
-
-    private SearchNode startNode;
     private List<SearchNode> goals;
     private SearchNode[,] map;
     private List<SearchNode> path;
+    public GameObject door;
+    
 
 
     // Use this for initialization
@@ -31,18 +34,12 @@ public class AStar : MonoBehaviour {
         goals = new List<SearchNode>();
         map = new SearchNode[image.width, image.height];
         loadMap();
-        startNode = new SearchNode
-        {
-            x = 30,
-            y = 30,
-            type = 'O',
-            weight = 1,
-            parent = null
-        };
-        map[30, 30] = startNode;
-        Debug.Log(goals[0].x);
 
-        bestFirstSearch(startNode, goals[0]);
+
+        
+        bestFirstSearch(20, 50);
+
+        printMap();
     }
 
     // Update is called once per frame
@@ -51,16 +48,94 @@ public class AStar : MonoBehaviour {
 
     }
 
+    private int findIndexOfMin(List<float> A)
+    {
+        float smallest = Mathf.Infinity;
+        int n = 0;
+        for (int i = 0; i < A.Count; i++)
+        {
+            if(A[i] < smallest)
+            {
+                smallest = A[i];
+                n = i;
+            }
+        }
+        return n;
+    }
+
+    public List<List<int>> bestFirstSearch(int startX, int startY)
+    {
+
+        SearchNode startNode = map[startX, startY];
+        startNode.type = 'O';
+        List<List<SearchNode>> paths = new List<List<SearchNode>>();
+        List<float> costs = new List<float>();
+
+        for (int i = 0; i < goals.Count; i++)
+        {
+            SearchNode n = goals[i];
+            if(Astar(startNode, n))
+            {
+                paths.Add(path);
+                costs.Add(0);
+                foreach (SearchNode p in path)
+                {
+                    if(p.parent != null)
+                    {
+                        costs[i] += edgeCost(p.parent, p);
+                    }
+                }
+                Debug.Log(i + " " + costs[i]);
+
+            }
+        }
+        int j = findIndexOfMin(costs);
+        Debug.Log(j);
+        List<SearchNode> bestPath = paths[j];
+        List<List<int>> intPath = new List<List<int>>();
+        for (int i = 0; i < bestPath.Count; i++)
+        {
+            intPath.Add(new List<int>());
+            int x = bestPath[i].x;
+            int y = bestPath[i].y;
+            intPath[i].Add(x);
+            intPath[i].Add(y);
+            map[x, y].type = 'B';
+        }
+        return intPath;
+        
+    }
+
+    private void printMap()
+    {
+        for (int j = 0; j < image.height; j++)
+        {
+            for (int i = 0; i < image.width; i++)
+            {
+                if (map[i, j].type.Equals('P'))
+                {
+                    map[i, j].cube.GetComponent<Renderer>().material.color = Color.magenta;
+                    continue;
+                }
+                if (map[i, j].type.Equals('B'))
+                {
+                    map[i, j].cube.GetComponent<Renderer>().material.color = Color.green;
+                    continue;
+                }
+            }
+        }
+    }
+
     private SearchNode popLeft(List<SearchNode> A)
     {
-        SearchNode r = A[A.Count - 1];
-        A.RemoveAt(A.Count - 1);
+        SearchNode r = A[0];
+        A.RemoveAt(0);
         return r;
     }
 
     private float edgeCost(SearchNode a, SearchNode b)
     {
-        if(a.x != b.x && a.y != b.y)
+        if (a.x != b.x && a.y != b.y)
         {
             return 1.3f;
         }
@@ -71,7 +146,7 @@ public class AStar : MonoBehaviour {
     private void attachEval(SearchNode C, SearchNode P, SearchNode goal)
     {
         C.parent = P;
-        C.g = P.g + 1;
+        C.g = P.g + edgeCost(P, C);
         C.h = heuristic(C, goal);
         C.f = C.g + C.h;
     }
@@ -81,7 +156,7 @@ public class AStar : MonoBehaviour {
     {
         foreach (SearchNode n in P.children)
         {
-            if(P.g + edgeCost(P, n) < n.g)
+            if (P.g + edgeCost(P, n) < n.g)
             {
                 n.parent = P;
                 n.g = P.g + edgeCost(P, n);
@@ -96,14 +171,11 @@ public class AStar : MonoBehaviour {
      * A*-search.
      * Returns: bool. True if success, False is not.
      */
-    public bool bestFirstSearch(SearchNode start, SearchNode goal)
+    public bool Astar(SearchNode start, SearchNode goal)
     {
         List<SearchNode> open = new List<SearchNode>();
         List<SearchNode> closed = new List<SearchNode>();
         SearchNode current;
-
-
-        Debug.Log("heihei");
 
 
         start.g = 0;
@@ -147,7 +219,7 @@ public class AStar : MonoBehaviour {
                 {
                     attachEval(node, current, goal); //sets parent and calculates g, h, and f
                     open.Add(node);
-                    open = quickSort(open); // Sorts based on f. If equal f it sorts on the heuristic(manhattan distance)
+                    open.Sort((x, y) => x.f.CompareTo(y.f));// Sorts based on f. If equal f it sorts on the heuristic(manhattan distance)
                 }
                 // If already discovered, but the current node is a better parent
                 else if (current.g + edgeCost(current, node) < node.g)
@@ -164,52 +236,44 @@ public class AStar : MonoBehaviour {
         }
 
         return false;
-    }
-
-    public void setStart(SearchNode start)
-    {
-        this.startNode = start;
-        start.parent = null;
-    }
-    public SearchNode getStart()
-    {
-        return startNode;
-    }
+    }   
     public List<SearchNode> getGoal()
     {
         return goals;
     }
 
+
+
     /**
      * Sort the list in descending order
      * 
      */
-    private List<SearchNode> quickSort(List<SearchNode> A)
+    public List<SearchNode> Quicksort(List<SearchNode> elements)
     {
-        //TODO: Sort based on h-value aswell
-        List<SearchNode> less = new List<SearchNode>();
-        List<SearchNode> equal = new List<SearchNode>();
+        if (elements.Count < 2) return elements;
+        int pivot = (int)elements.Count / 2;
+        SearchNode val = elements[pivot];
+        List<SearchNode> lesser = new List<SearchNode>();
         List<SearchNode> greater = new List<SearchNode>();
-        int pivot;
-
-        if(A.Count > 1)
+        for (int i = 0; i < elements.Count; i++)
         {
-            pivot = (int)A[A.Count - 1].f;
-            foreach (SearchNode node in A)
+            if (i != pivot)
             {
-                if(node.f < pivot) { less.Add(node); }
-                else if (node.f == pivot) { equal.Add(node); }
-                else if (node.f > pivot) { greater.Add(node); }
+                if (elements[i].f < elements[pivot].f)
+                {
+                    lesser.Add(elements[i]);
+                }
+                else
+                {
+                    greater.Add(elements[i]);
+                }
             }
-
-            List<SearchNode> An = new List<SearchNode>();
-
-            An.AddRange(quickSort(less));
-            An.AddRange(quickSort(equal));
-            An.AddRange(quickSort(greater));
-
         }
-        return A;
+
+        List<SearchNode> merged = Quicksort(lesser);
+        merged.Add(val);
+        merged.AddRange(Quicksort(greater));
+        return merged;
     }
 
 
@@ -226,14 +290,17 @@ public class AStar : MonoBehaviour {
         {
             for (int j = -1; j < 2; j++)
             {
+                if (i == 0 && j == 0) { continue; }
                 int posX = N.x + i;
                 int posY = N.y + j;
-                if((posX > 0 && posX < image.width - 1) && 
-                    (posY > 0 && posY < image.height - 1) &&
-                    (posX == 0 && posY == 0))
+                if ((posX > 0 && posX < image.width - 1) &&
+                    (posY > 0 && posY < image.height - 1))
                 {
                     SearchNode neighbour = map[posX, posY];
-                    if(neighbour.type != 'W') { N.children.Add(neighbour); }
+                    if (!neighbour.type.Equals('W'))
+                    {
+                        N.children.Add(neighbour);
+                    }
 
                 }
             }
@@ -255,21 +322,27 @@ public class AStar : MonoBehaviour {
      */
     private void loadMap()
     {
-        for (int i = 0; i < image.width; i++)
+        for (int j = 0; j < image.height; j++)
         {
-            for (int j = 0; j < image.height; j++)
+            for (int i = 0; i < image.width; i++)
             {
                 Color pixel = image.GetPixel(i, j);
                 SearchNode node = new SearchNode();
                 map[i, j] = node;
-                
+                node.children = new List<SearchNode>();
+                node.cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                node.cube.transform.position = new Vector3(i, 0, j);
+                node.x = i;
+                node.y = j;
+
                 //Is it a wall?
-                if (pixel.r < 0.5 && pixel.g < 0.5 && pixel.b < 0.5)
+                if (pixel.r == 0 && pixel.g == 0 && pixel.b == 0)
                 {
                     node.type = 'W';
                     node.weight = getWeight('W');
-                    node.x = i;
-                    node.y = j;
+                    node.cube.transform.localScale += new Vector3(0, 2, 0);
+                    node.cube.transform.position = new Vector3(node.cube.transform.position.x, 1.5f, node.cube.transform.position.z); 
+                    node.cube.GetComponent<Renderer>().material.color = Color.red;
                     continue;
                 }
                 //Is it a door?
@@ -277,26 +350,42 @@ public class AStar : MonoBehaviour {
                 {
                     node.type = 'D';
                     node.weight = getWeight('D');
-                    node.x = i;
-                    node.y = j;
+                    node.cube.GetComponent<Renderer>().material.color = Color.blue;
+                    GameObject d = Instantiate(door);
+                    d.transform.position = new Vector3(node.x, 0.54f, node.y);
+                    d.transform.localScale = new Vector3(0.46f, 0.49f, 0.64f);
+
                     goals.Add(node);
                     continue;
                 }
-                //It is a floor.
-                node.type = 'F';
-                node.weight = getWeight('F');
-                node.x = i;
-                node.y = j;
+                if (pixel.r > 0.5 && pixel.g > 0.5 && pixel.b > 0.5)
+                {
+                    //It is a floor.
+                    node.type = 'F';
+                    node.weight = getWeight('F');
+                }
+            }
+        }
+
+        foreach (SearchNode n in goals)
+        {
+            for (int i = -1; i < 2; i++)
+            {
+                for (int j = -1; j < 2; j++)
+                {
+                    if (i == 0 && j == 0) { continue; }
+                    int posX = n.x + i;
+                    int posY = n.y + j;
+                    SearchNode neighbour = map[posX, posY];
+                    if (neighbour.type.Equals('W'))
+                    {
+                        neighbour.cube.transform.localScale = new Vector3(1, 1, 1);
+                        neighbour.cube.transform.position = new Vector3(neighbour.cube.transform.position.x, 0, neighbour.cube.transform.position.z);
+                    }
+                }
             }
         }
         Debug.Log("Map Loaded");
-    }
-
-
-
-    private int[,] backpropagation()
-    {
-        return null;
     }
 }
 
