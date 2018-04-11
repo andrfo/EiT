@@ -8,21 +8,18 @@ using System.IO;
 public class move_camera : MonoBehaviour {
 
 	//SET START POSITION
-<<<<<<< HEAD
-	public float current_x_pos = 50f;
-	public float current_z_pos = 20f;
-=======
 	private float current_x_pos = 60f;
 	private float current_z_pos = 40f;
 	private float y_pos = 3.5f;
 
->>>>>>> ccefcec... unity-henning klar for demo?
 
 	public GameObject character;
 
 	public GameObject path_object;
 	public GameObject[] arrows;
+	public GameObject fire;
 
+	private AStar AStar;
 
 	private int path_length = 0;
 	public int closest_path = 0;
@@ -40,12 +37,14 @@ public class move_camera : MonoBehaviour {
 	private Vector3 rotateValue;
 
 
+	public GameObject fireball;
+	public GameObject explosion;
+	public GameObject meteorSwarm;
+	public GameObject FireBolt;
+
+
 	void Start () 
 	{
-<<<<<<< HEAD
-		generate_path ();
-		//generate_path_old ();
-=======
 		Debug.Log ("starting...");
 		GameObject AStarObj = GameObject.Find ("Astar");
 		AStar = AStarObj.GetComponent<AStar> ();
@@ -63,25 +62,17 @@ public class move_camera : MonoBehaviour {
 		//StartCoroutine(generate_meteor_swarm_coroutine());
 		//StartCoroutine(generate_explosion_coroutine());
 
->>>>>>> ccefcec... unity-henning klar for demo?
 		InvokeRepeating("update_position", .5f, time_interval);
+
 	}
 		
-	void Update () 
+	void Update ()
 	{
-		for (int i = closest_path; i < path_length - 1; i++) 
-		{
-			current_dist = vector_distance(Camera.main.gameObject, arrows[i]);
-
-			if (current_dist < distance_threshold)
-			{
-				if (i + 1 <= path_length) 
-				{
-					closest_path = i+1;
-				}
-
-			}
+		current_dist = vector_distance (Camera.main.gameObject, arrows [closest_path]);
+		if (current_dist < distance_threshold) {
+			closest_path += 1;
 		}
+
 		set_arrow_status (0, closest_path+1, false);
 		set_arrow_status (closest_path+2, closest_path+lookahead_constant+2, true);
 		set_arrow_status (closest_path+lookahead_constant+3, path_length, false);
@@ -119,7 +110,7 @@ public class move_camera : MonoBehaviour {
 		foreach (string line in lines)
 		{
 			string[] tokens = line.Split(' ');
-			arrows [i] = Instantiate(path_object, new Vector3(Int32.Parse(tokens[0]) - current_x_pos, 0.2f, Int32.Parse(tokens[1]) - current_z_pos),  Quaternion.identity) as GameObject;
+			arrows [i] = Instantiate(path_object, new Vector3(Int32.Parse(tokens[0]), 5.2f, Int32.Parse(tokens[1])),  Quaternion.identity) as GameObject;
 			arrows[i].transform.localScale = new Vector3 (.8f, .8f, .8f);
 
 			if (i != 0) 
@@ -132,11 +123,13 @@ public class move_camera : MonoBehaviour {
 			i++;
 		}
 	}
-		
+
 	void generate_path()
 	{
+		List<List<int>> path = AStar.bestFirstSearch ((int)current_x_pos, (int)current_z_pos);
+
 		int i = 0;
-		List<List<int>> path = best_first_search (current_x_pos, current_z_pos);
+
 		//read path from file
 		path_length = path.Count;
 
@@ -146,14 +139,14 @@ public class move_camera : MonoBehaviour {
 
 		foreach (List<int> position in path)
 		{
-			arrows [i] = Instantiate(path_object, new Vector3(position[0] - current_x_pos, 0.1f, position[1] - current_z_pos),  Quaternion.identity) as GameObject;
+			arrows [i] = Instantiate(path_object, new Vector3(position[0], 0.7f, position[1]),  Quaternion.identity) as GameObject;
 			arrows[i].transform.localScale = new Vector3 (.8f, .8f, .8f);
 
 			if (i != 0) 
 			{
 				arrows [i - 1].transform.LookAt (arrows[i].transform);
 				arrows [i - 1].transform.Rotate (arrows [i].transform.up * 90);
-				arrows[i-1].transform.Rotate(arrows[i].transform.right * 90);
+				arrows [i - 1].transform.Rotate(arrows[i].transform.right * 90);
 				//TODO: Set last arrow to something telling us we have reached the exit
 			}
 			i++;
@@ -188,11 +181,9 @@ public class move_camera : MonoBehaviour {
 		Vector3 arrow_in_camera_height = new Vector3 (arrows [closest_path].transform.position.x, Camera.main.transform.position.y, arrows [closest_path].transform.position.z);
 
 		var targetRotation = Quaternion.LookRotation(arrow_in_camera_height - Camera.main.transform.position);
-		Camera.main.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 3 * Time.deltaTime);
+		Camera.main.transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
 
 	}
-<<<<<<< HEAD
-=======
 	void generate_fire()
 	{
 		int size = 2;
@@ -249,7 +240,6 @@ public class move_camera : MonoBehaviour {
 			yield return new WaitForSeconds (UnityEngine.Random.Range(1, 3));
 		}
 	}
->>>>>>> ccefcec... unity-henning klar for demo?
 
 }
 	

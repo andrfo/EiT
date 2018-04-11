@@ -113,34 +113,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &440986731
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 440986733}
-  m_Layer: 0
-  m_Name: make_path
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &440986733
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 440986731}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.702211, y: 2.2113876, z: 1.73435}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &811684055
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,6 +178,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &1100987961
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1100987963}
+  - component: {fileID: 1100987962}
+  m_Layer: 0
+  m_Name: Astar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1100987962
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1100987961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a3cb098c83948b4da4b701bd072456c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  image: {fileID: 2800000, guid: 033fc4d30fc434d95a281d6aff2c10a6, type: 3}
+  door: {fileID: 100008, guid: 65fb86f734ce568408b3eaad4fca1b60, type: 3}
+  wall: {fileID: 104986, guid: a5b4d15f79a319f4495d35cba5a10c56, type: 2}
+  floor: {fileID: 100000, guid: 83821cf4970aad743b52430fad487999, type: 3}
+  imageWidth: 0
+  imageHeight: 0
+--- !u!4 &1100987963
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1100987961}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.702211, y: 2.2113876, z: 1.73435}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1789087104
 GameObject:
   m_ObjectHideFlags: 0
@@ -299,18 +317,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71dcf89e3407340dea8e347e961ab929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
-  path_object: {fileID: 1596552928614662, guid: 8545c4aa8de6342e6a8301a367bf6c14,
-    type: 2}
-  arrows: []
-  current_x_pos: 50
-  current_y_pos: 20
-=======
   character: {fileID: 0}
   path_object: {fileID: 100000, guid: 699652891dffc4b3ea4e1f918e468ab5, type: 3}
   arrows: []
   fire: {fileID: 198690, guid: 18faec2a14493684d905501076799765, type: 2}
->>>>>>> ccefcec... unity-henning klar for demo?
   closest_path: 0
   fireball: {fileID: 121802, guid: 8f18e1d8c46c51f429429815455062fc, type: 2}
   explosion: {fileID: 131164, guid: 3c5f4e32698bdb04eaed647f60310510, type: 2}
