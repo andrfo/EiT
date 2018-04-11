@@ -26,6 +26,7 @@ public class move_camera : MonoBehaviour {
 	private int lookahead_constant = 5;
 	private float distance_threshold = 0.5f;
 
+	private bool goalReached;
 
 	private float increment = 0;
 	private float time_interval = 0.01f;
@@ -46,6 +47,8 @@ public class move_camera : MonoBehaviour {
 	void Start () 
 	{
 		Debug.Log ("starting...");
+		goalReached = false;
+
 		GameObject AStarObj = GameObject.Find ("Astar");
 		AStar = AStarObj.GetComponent<AStar> ();
 
@@ -53,7 +56,7 @@ public class move_camera : MonoBehaviour {
 		generate_path ();
 		//StartCoroutine (generate_path()); 
 
-		generate_fire();
+		//generate_fire();
 
 		//StartCoroutine(generate_fireball_coroutine());
 
@@ -69,13 +72,21 @@ public class move_camera : MonoBehaviour {
 	void Update ()
 	{
 		current_dist = vector_distance (Camera.main.gameObject, arrows [closest_path]);
-		if (current_dist < distance_threshold) {
+		if (current_dist < distance_threshold) 
+		{
 			closest_path += 1;
 		}
 
-		set_arrow_status (0, closest_path+1, false);
-		set_arrow_status (closest_path+2, closest_path+lookahead_constant+2, true);
-		set_arrow_status (closest_path+lookahead_constant+3, path_length, false);
+		if (closest_path == path_length - 4) {
+			goalReached = true;
+		} 
+		else 
+		{
+			set_arrow_status (0, closest_path+1, false);
+			set_arrow_status (closest_path+2, closest_path+lookahead_constant+2, true);
+			set_arrow_status (closest_path+lookahead_constant+3, path_length, false);	
+		}
+
 	}
 
 	void update_position()
@@ -87,43 +98,19 @@ public class move_camera : MonoBehaviour {
 		//this value seems to work fine
 		increment = time_interval * 3;
 
-		//translation
-		Vector3 start = Camera.main.transform.position;
-		Vector3 end = arrows [closest_path].transform.position;
-		Camera.main.transform.position += Camera.main.transform.forward * 40 * increment * Time.deltaTime;
+		if (!goalReached)
+		{
+			//translation
+			Vector3 start = Camera.main.transform.position;
+			Vector3 end = arrows [closest_path].transform.position;
+			Camera.main.transform.position += Camera.main.transform.forward * 40 * increment * Time.deltaTime;
 
-		//rotation
-		rotate_camera ();
+			//rotation
+			rotate_camera ();			
+		}
+
 	}
 		
-	void generate_path_old()
-	{
-		int i = 0;
-
-		//read path from file
-		string[] lines = System.IO.File.ReadAllLines(Path.Combine(Directory.GetCurrentDirectory(), "coordinates.txt"));
-		path_length = lines.Length;
-
-		//init new arrow array
-		arrows = new GameObject[path_length];
-
-		foreach (string line in lines)
-		{
-			string[] tokens = line.Split(' ');
-			arrows [i] = Instantiate(path_object, new Vector3(Int32.Parse(tokens[0]), 5.2f, Int32.Parse(tokens[1])),  Quaternion.identity) as GameObject;
-			arrows[i].transform.localScale = new Vector3 (.8f, .8f, .8f);
-
-			if (i != 0) 
-			{
-				arrows [i - 1].transform.LookAt (arrows[i].transform);
-				arrows [i - 1].transform.Rotate (arrows [i].transform.up * 90);
-				arrows[i-1].transform.Rotate(arrows[i].transform.right * 90);
-				//TODO: Set last arrow to something telling us we have reached the exit
-			}
-			i++;
-		}
-	}
-
 	void generate_path()
 	{
 		List<List<int>> path = AStar.bestFirstSearch ((int)current_x_pos, (int)current_z_pos);
@@ -152,9 +139,7 @@ public class move_camera : MonoBehaviour {
 			i++;
 		}
 	}
-
-
-
+		
 	void set_arrow_status(int from, int to, bool stat)
 	{
 		for (int k = from; k < to; k++) 

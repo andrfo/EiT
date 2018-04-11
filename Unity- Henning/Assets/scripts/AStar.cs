@@ -21,6 +21,7 @@ public class SearchNode
 public class AStar : MonoBehaviour
 {
 
+	public Texture2D wallTexture;
 	public Texture2D image;
     private List<SearchNode> goals;
     private SearchNode[,] map;
@@ -45,6 +46,7 @@ public class AStar : MonoBehaviour
         goals = new List<SearchNode>();
         map = new SearchNode[image.width, image.height];
         loadMap();
+
 
 
         
@@ -314,8 +316,8 @@ public class AStar : MonoBehaviour
                 if (i == 0 && j == 0) { continue; }
                 int posX = N.x + i;
                 int posY = N.y + j;
-                if ((posX > 0 && posX < image.width - 1) &&
-                    (posY > 0 && posY < image.height - 1))
+                if ((posX > 0 && posX < image.width) &&
+                    (posY > 0 && posY < image.height))
                 {
                     SearchNode neighbour = map[posX, posY];
                     
@@ -323,6 +325,13 @@ public class AStar : MonoBehaviour
 						N.children.Add (neighbour);
 					} else {
 						N.has_wall_neighbour = true;
+					}
+					if (neighbour.type.Equals ('D')) {
+						try{
+							N.cube.SetActive (false);
+						}
+						catch {
+						}
 					}
 
                 }
@@ -369,12 +378,19 @@ public class AStar : MonoBehaviour
                     node.type = 'W';
                     node.weight = getWeight('W');
 
+					//NOT SPAWNING WALLS
 
+					// GameObject w = Instantiate(wall);
+					var w = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
-					//NOT SPAWNING WALLS	
-					GameObject w = Instantiate(wall);
-					w.transform.position = new Vector3(node.x, 1.5f, node.y);
-					w.transform.localScale = new Vector3(.45f, 3.2f, .45f);
+					w.transform.position = new Vector3(node.x, 0f, node.y);
+					w.transform.localScale = new Vector3(1, 8f, 1f);	
+					node.cube = w;
+
+					w.GetComponent<Renderer> ().material.mainTexture = wallTexture;
+					
+			
+
                     continue;
                 }
                 //Is it a door?
@@ -395,7 +411,7 @@ public class AStar : MonoBehaviour
                     GameObject d = Instantiate(door);
                     d.transform.position = new Vector3(node.x, 0.54f, node.y);
                     d.transform.localScale = new Vector3(0.46f, 0.49f, 0.64f);
-
+					node.cube = d;
                     goals.Add(node);
                     continue;
                 }
@@ -406,9 +422,10 @@ public class AStar : MonoBehaviour
                     node.weight = getWeight('F');
 
 					// NOT SPAWNING FLOOR
-					GameObject f = Instantiate(wall);
-					f.transform.position = new Vector3(node.x, 0, node.y);
-					f.transform.localScale = new Vector3(1, 0.6f, 1);
+					//GameObject f = Instantiate(floor);
+					//f.transform.position = new Vector3(node.x, 0, node.y);
+					//f.transform.localScale = new Vector3(1, 0.6f, 1);
+					//node.cube = f;
 
                 }
             }
