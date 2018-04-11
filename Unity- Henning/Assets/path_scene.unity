@@ -317,7 +317,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71dcf89e3407340dea8e347e961ab929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  character: {fileID: 0}
   path_object: {fileID: 100000, guid: 699652891dffc4b3ea4e1f918e468ab5, type: 3}
   arrows: []
-  fire: {fileID: 132746, guid: b86c5b2aa8096224886b7d41a74230ac, type: 2}
+  fire: {fileID: 198690, guid: 18faec2a14493684d905501076799765, type: 2}
   closest_path: 0
+  fireball: {fileID: 121802, guid: 8f18e1d8c46c51f429429815455062fc, type: 2}
+  explosion: {fileID: 131164, guid: 3c5f4e32698bdb04eaed647f60310510, type: 2}
+  meteorSwarm: {fileID: 165786, guid: d7b50f004cdc74b409188d8b822292fc, type: 2}
+  FireBolt: {fileID: 168262, guid: 062893e7007e39441aea009115b6cefa, type: 2}

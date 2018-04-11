@@ -14,23 +14,26 @@ public class SearchNode
     public float g;
     public float h;
     public float f;
-    public GameObject cube;
+	public GameObject cube;
 	public bool has_wall_neighbour = false;
 }
 
 public class AStar : MonoBehaviour
 {
 
-    public Texture2D image;
+	public Texture2D image;
     private List<SearchNode> goals;
     private SearchNode[,] map;
     private List<SearchNode> path;
+
     public GameObject door;
 	public GameObject wall;
 	public GameObject floor;
 
 	public int imageWidth;
 	public int imageHeight;
+
+	private int color_threshold = 30;
     
 
 
@@ -350,34 +353,45 @@ public class AStar : MonoBehaviour
                 SearchNode node = new SearchNode();
                 map[i, j] = node;
                 node.children = new List<SearchNode>();
-                node.cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                node.cube.transform.position = new Vector3(i, 0, j);
+
                 node.x = i;
                 node.y = j;
 
-                //Is it a wall?
-                if (pixel.r == 0 && pixel.g == 0 && pixel.b == 0)
+
+				float R =  pixel.r * 255;
+				float G =  pixel.g * 255;
+				float B =  pixel.b * 255;
+
+			
+				//Is it a wall?
+                if (R == 0 && G == 0 && B == 0)
                 {
                     node.type = 'W';
                     node.weight = getWeight('W');
 
-					GameObject w = Instantiate(wall);
-					w.transform.position = new Vector3(node.cube.transform.position.x, 1.5f, node.cube.transform.position.z);
-					w.transform.localScale = new Vector3(.45f, 1.2f, .45f);
-					//d.transform.Rotate (Vector3.right * 90);
-					//d.transform.Rotate (Vector3.right * 90);
 
-					//node.cube.transform.localScale += new Vector3(0, 2, 0);
-                    //node.cube.transform.position = new Vector3(node.cube.transform.position.x, 1.5f, node.cube.transform.position.z); 
-                    //node.cube.GetComponent<Renderer>().material.color = Color.red;
+
+					//NOT SPAWNING WALLS	
+					GameObject w = Instantiate(wall);
+					w.transform.position = new Vector3(node.x, 1.5f, node.y);
+					w.transform.localScale = new Vector3(.45f, 3.2f, .45f);
                     continue;
                 }
                 //Is it a door?
-                if (pixel.r > 0.5 && pixel.g > 0.5 && pixel.b < 0.5)
+				else if (Mathf.Abs(R-255) < color_threshold && Mathf.Abs(G-242) < color_threshold && Mathf.Abs(B-10) < color_threshold)
                 {
+					
+
+					Debug.Log ("R: "+ R);
+					Debug.Log ("G: "+ G);
+					Debug.Log ("B: "+ B);
+
+					//Debug.Log (Mathf.Abs(R-255));
+					//Debug.Log (Mathf.Abs(G-242));
+					//Debug.Log (Mathf.Abs(B-10));
+
                     node.type = 'D';
                     node.weight = getWeight('D');
-                    node.cube.GetComponent<Renderer>().material.color = Color.blue;
                     GameObject d = Instantiate(door);
                     d.transform.position = new Vector3(node.x, 0.54f, node.y);
                     d.transform.localScale = new Vector3(0.46f, 0.49f, 0.64f);
@@ -385,13 +399,15 @@ public class AStar : MonoBehaviour
                     goals.Add(node);
                     continue;
                 }
-                if (pixel.r > 0.5 && pixel.g > 0.5 && pixel.b > 0.5)
+				else if (Mathf.Abs(R-255) < color_threshold && Mathf.Abs(G-255) < color_threshold && Mathf.Abs(B-255) < color_threshold)
                 {
                     //It is a floor.
                     node.type = 'F';
                     node.weight = getWeight('F');
+
+					// NOT SPAWNING FLOOR
 					GameObject f = Instantiate(wall);
-					f.transform.position = new Vector3(node.cube.transform.position.x, 0, node.cube.transform.position.z);
+					f.transform.position = new Vector3(node.x, 0, node.y);
 					f.transform.localScale = new Vector3(1, 0.6f, 1);
 
                 }
@@ -408,11 +424,11 @@ public class AStar : MonoBehaviour
                     int posX = n.x + i;
                     int posY = n.y + j;
                     SearchNode neighbour = map[posX, posY];
-                    if (neighbour.type.Equals('W'))
-                    {
-                        neighbour.cube.transform.localScale = new Vector3(1, 1, 1);
-                        neighbour.cube.transform.position = new Vector3(neighbour.cube.transform.position.x, 0, neighbour.cube.transform.position.z);
-                    }
+                    //if (neighbour.type.Equals('W'))
+                    //{
+                    //    neighbour.cube.transform.localScale = new Vector3(1, 1, 1);
+                    //    neighbour.cube.transform.position = new Vector3(neighbour.cube.transform.position.x, 0, neighbour.cube.transform.position.z);
+                    //}
                 }
             }
         }

@@ -8,10 +8,12 @@ using System.IO;
 public class move_camera : MonoBehaviour {
 
 	//SET START POSITION
-	private float current_x_pos = 40f;
+	private float current_x_pos = 60f;
 	private float current_z_pos = 40f;
-	private float y_pos = 1.5f;
+	private float y_pos = 3.5f;
 
+
+	public GameObject character;
 
 	public GameObject path_object;
 	public GameObject[] arrows;
@@ -43,17 +45,22 @@ public class move_camera : MonoBehaviour {
 
 	void Start () 
 	{
+		Debug.Log ("starting...");
 		GameObject AStarObj = GameObject.Find ("Astar");
 		AStar = AStarObj.GetComponent<AStar> ();
 
 		Camera.main.transform.position = new Vector3(current_x_pos, y_pos, current_z_pos);
 		generate_path ();
 		//StartCoroutine (generate_path()); 
-		//generate_fire();
-		StartCoroutine(generate_fireball_coroutine());
-		StartCoroutine(generate_fire_bolt_coroutine());
-		StartCoroutine(generate_meteor_swarm_coroutine());
-		StartCoroutine(generate_explosion_coroutine());
+
+		generate_fire();
+
+		//StartCoroutine(generate_fireball_coroutine());
+
+		//StartCoroutine(generate_fire_bolt_coroutine());
+		//StartCoroutine(generate_meteor_swarm_coroutine());
+		//StartCoroutine(generate_meteor_swarm_coroutine());
+		//StartCoroutine(generate_explosion_coroutine());
 
 		InvokeRepeating("update_position", .5f, time_interval);
 
@@ -78,7 +85,7 @@ public class move_camera : MonoBehaviour {
 		
 
 		//this value seems to work fine
-		increment = time_interval * 2;
+		increment = time_interval * 3;
 
 		//translation
 		Vector3 start = Camera.main.transform.position;
@@ -179,10 +186,19 @@ public class move_camera : MonoBehaviour {
 	}
 	void generate_fire()
 	{
-		for (int i = 0; i < 20; i++){
-			GameObject f = Instantiate (fire);
-			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
-			f.transform.localScale = new Vector3(2, 2, 2);
+		int size = 2;
+		for (int i = 0; i < 5; i++){
+			float randomx = UnityEngine.Random.Range (0, AStar.imageWidth);
+			float randomz = UnityEngine.Random.Range (0, AStar.imageHeight);
+			for (int j = 0; j < size ; j++) {
+				for (int k = 0; k < size; k++) {
+					GameObject f = Instantiate (fire);
+					f.transform.position = new Vector3 (randomx+j, 1, randomz+k);
+					f.transform.localScale = new Vector3(2, 2, 2);
+
+				}
+						
+			}
 		}
 
 	}
@@ -193,6 +209,7 @@ public class move_camera : MonoBehaviour {
 			GameObject f = Instantiate (fireball);
 			f.transform.position = new Vector3 ( UnityEngine.Random.Range(0, AStar.imageWidth), 1, UnityEngine.Random.Range(0, AStar.imageHeight));
 			f.transform.localScale = new Vector3(2, 2, 2);
+
 			yield return new WaitForSeconds (UnityEngine.Random.Range(1, 3));
 		}
 	}
