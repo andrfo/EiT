@@ -58,7 +58,7 @@ public class move_camera : MonoBehaviour {
 
 		//generate_fire();
 
-		//StartCoroutine(generate_fireball_coroutine());
+		StartCoroutine(generate_fireball_coroutine());
 
 		//StartCoroutine(generate_fire_bolt_coroutine());
 		//StartCoroutine(generate_meteor_swarm_coroutine());
